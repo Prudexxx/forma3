@@ -468,28 +468,25 @@ function updatePreview() {
   const el = document.createElement('div');
   el.innerHTML = content;
 
-  // Задержка для полной отрисовки
-  setTimeout(() => {
-    // Оборачиваем в другой контейнер, чтобы избежать проблем
-    const wrapper = document.createElement('div');
-    wrapper.appendChild(el);
+  // Используем одинаковые настройки, как в downloadPdf()
+  const options = {
+    html2canvas: { scale: 2, dpi: 300, useCORS: true }
+  };
 
-    html2pdf().set({
-      html2canvas: { scale: 2, dpi: 150, useCORS: true }
-    }).from(wrapper).outputPdf().then(function(pdfBlob) {
-      const url = URL.createObjectURL(pdfBlob);
-      const iframe = document.createElement('iframe');
-      iframe.src = url;
-      iframe.style.width='100%';
-      iframe.style.height='80vh';
-      iframe.style.border='none';
-      container.innerHTML='';
-      container.appendChild(iframe);
-    }).catch(function(error){
-      console.error('Ошибка при создании PDF:', error);
-      alert('Не удалось подготовить предпросмотр PDF. Попробуйте еще раз.');
-    });
-  }, 700);
+  // Создаем и отображаем PDF
+  html2pdf().set(options).from(el).outputPdf().then(function(pdfBlob) {
+    const url = URL.createObjectURL(pdfBlob);
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.style.width='100%';
+    iframe.style.height='80vh';
+    iframe.style.border='none';
+    container.innerHTML='';
+    container.appendChild(iframe);
+  }).catch(function(error){
+    console.error('Ошибка при создании PDF:', error);
+    alert('Не удалось подготовить предпросмотр PDF. Попробуйте еще раз.');
+  });
 }
 </script>
 </body>
