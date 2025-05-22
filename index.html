@@ -6,6 +6,11 @@
 <title>Создание договора</title>
 <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <style>
+  #pdfPreview iframe {
+  width: 100%;
+  height: 80vh;
+  border: none;
+}
 body {
   background-color: rgb(150, 78, 245);
   font-family: Arial, sans-serif;
@@ -461,18 +466,21 @@ function updatePreview() {
   const el = document.createElement('div');
   el.innerHTML = content;
   // Генерируем PDF в Blob и отображаем во iframe
-  html2pdf().set({
-    html2canvas: { scale: 2, dpi: 300, useCORS: true }
-  }).from(el).outputPdf().then(function(pdfBlob) {
-    const url = URL.createObjectURL(pdfBlob);
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.style.width='100%';
-    iframe.style.height='400px';
-    container.innerHTML=''; // очистка
-    container.appendChild(iframe);
-  });
-}
+html2pdf().set({
+  html2canvas: { scale: 3, dpi: 300, useCORS: true }
+}).from(el).outputPdf().then(function(pdfBlob) {
+  const url = URL.createObjectURL(pdfBlob);
+  const iframe = document.createElement('iframe');
+  iframe.src = url;
+  iframe.style.width='100%';
+  iframe.style.height='80vh';
+  iframe.style.border='none';
+  container.innerHTML='';
+  container.appendChild(iframe);
+}).catch(function(error){
+  console.error('Ошибка при создании PDF:', error);
+  alert('Не удалось удалось подготовить предпросмотр PDF. Попробуйте обновить страницу.');
+});}
 </script>
 </body>
 </html>
