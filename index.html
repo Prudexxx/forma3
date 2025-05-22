@@ -460,6 +460,7 @@ function updatePreview() {
   const data = getFormData();
   if (!data) return;
   const allItems = getAllItems();
+
   const content = buildFullContent(data, allItems);
   const container = document.getElementById('pdfPreview');
   container.innerHTML='';
@@ -467,11 +468,15 @@ function updatePreview() {
   const el = document.createElement('div');
   el.innerHTML = content;
 
-  // Ждем небольшую задержку, чтобы браузер полностью отрисовал контент
+  // Задержка для полной отрисовки
   setTimeout(() => {
+    // Оборачиваем в другой контейнер, чтобы избежать проблем
+    const wrapper = document.createElement('div');
+    wrapper.appendChild(el);
+
     html2pdf().set({
-      html2canvas: { scale: 3, dpi: 300, useCORS: true }
-    }).from(el).outputPdf().then(function(pdfBlob) {
+      html2canvas: { scale: 2, dpi: 150, useCORS: true }
+    }).from(wrapper).outputPdf().then(function(pdfBlob) {
       const url = URL.createObjectURL(pdfBlob);
       const iframe = document.createElement('iframe');
       iframe.src = url;
@@ -482,9 +487,9 @@ function updatePreview() {
       container.appendChild(iframe);
     }).catch(function(error){
       console.error('Ошибка при создании PDF:', error);
-      alert('Не удалось подготовить предпросмотр PDF. Попробуйте обновить страницу.');
+      alert('Не удалось подготовить предпросмотр PDF. Попробуйте еще раз.');
     });
-  }, 300);
+  }, 700);
 }
 </script>
 </body>
