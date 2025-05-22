@@ -462,27 +462,29 @@ function updatePreview() {
   const allItems = getAllItems();
   const content = buildFullContent(data, allItems);
   const container = document.getElementById('pdfPreview');
-  container.innerHTML=''; // очищаем
+  container.innerHTML='';
 
   const el = document.createElement('div');
   el.innerHTML = content;
 
-  // Генерация PDF с высоким масштабом для предпросмотра
-  html2pdf().set({
-    html2canvas: { scale: 3, dpi: 300, useCORS: true }
-  }).from(el).outputPdf().then(function(pdfBlob) {
-    const url = URL.createObjectURL(pdfBlob);
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.style.width='100%';
-    iframe.style.height='80vh';
-    iframe.style.border='none';
-    container.innerHTML='';
-    container.appendChild(iframe);
-  }).catch(function(error){
-    console.error('Ошибка при создании PDF:', error);
-    alert('Не удалось подготовить предпросмотр PDF. Попробуйте обновить страницу.');
-  });
+  // Ждем небольшую задержку, чтобы браузер полностью отрисовал контент
+  setTimeout(() => {
+    html2pdf().set({
+      html2canvas: { scale: 3, dpi: 300, useCORS: true }
+    }).from(el).outputPdf().then(function(pdfBlob) {
+      const url = URL.createObjectURL(pdfBlob);
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.style.width='100%';
+      iframe.style.height='80vh';
+      iframe.style.border='none';
+      container.innerHTML='';
+      container.appendChild(iframe);
+    }).catch(function(error){
+      console.error('Ошибка при создании PDF:', error);
+      alert('Не удалось подготовить предпросмотр PDF. Попробуйте обновить страницу.');
+    });
+  }, 300);
 }
 </script>
 </body>
